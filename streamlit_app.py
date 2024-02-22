@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-# test
+from models.regression_lineaire import RegressionLineaire
+
 exemple = "./exemple.csv"
 
 
@@ -63,11 +64,11 @@ def main_page():
                              "Regression linéaire", "Regression polynomiale"])
     elif categorie == "Classification":
         model = st.selectbox("Choisir le modèle", [
-                             "K mean", "KNN"])
+                             "K mean", "KNN", "Random Forest", "Neural Network"])
 
     st.subheader("Choix des paramètres")
     if model == "Regression linéaire":
-        param = st.slider("Choisir le paramètre", 0, 10)
+        reg = RegressionLineaire()
 
     st.header("Visualiser les résultats")
 

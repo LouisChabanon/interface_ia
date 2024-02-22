@@ -24,7 +24,7 @@ class Model():
     def get_parameters(self):
         return self.parameters
 
-    def run(self):
+    def run(self, data: pd.DataFrame):
         print(f"Running model {self.name} with parameters {self.parameters}")
 
     def display_parameters(self):
