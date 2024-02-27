@@ -13,3 +13,6 @@ class RegressionLineaire(Model):
 
     def display_results(self):
         st.write(f"Résultat du modèle {self.name} avec paramètre {self.param}")
+
+    def execute(self, data):
+        pass
