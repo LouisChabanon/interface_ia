@@ -1,9 +1,8 @@
 import streamlit as st
 import pandas as pd
+from models.regression_lineaire import RegressionLineaire
 import base64
 
-
-# test
 exemple = "./exemple.csv"
 
 def display_pdf(file_path):
@@ -67,11 +66,12 @@ def main_page():
     if categorie == "Regression":
         model = st.selectbox("Choisir le modèle", ["Regression linéaire", "Regression polynomiale"])
     elif categorie == "Classification":
-        model = st.selectbox("Choisir le modèle", ["K mean", "KNN"])
+        model = st.selectbox("Choisir le modèle", [
+                             "K mean", "KNN", "Random Forest", "Neural Network"])
 
     st.subheader("Choix des paramètres")
     if model == "Regression linéaire":
-        param = st.slider("Choisir le paramètre", 0, 10)
+        reg = RegressionLineaire()
 
     st.header("Visualiser les résultats")
 
