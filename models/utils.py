@@ -25,8 +25,10 @@ class Model():
     def get_parameters(self):
         return self.parameters
 
+
     def run(self, data):
-        print(f"Running model {self.name} with parameters {self.parameters}")
+        pass
+
 
     def display_parameters(self):
         st.write("Aucun paramètre à afficher pour ce modèle")

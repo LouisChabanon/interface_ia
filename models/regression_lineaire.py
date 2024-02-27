@@ -21,4 +21,6 @@ class RegressionLineaire(Model):
         return reg.predict(predict_data[["Heure"]].iloc[10::])
 
     def display_results(self):
+        st.write(f"Résultat du modèle {self.name} avec paramètre {self.param}")
         return None
+        
