@@ -7,17 +7,10 @@ def test_regression_lineaire_run():
     from models.regression_lineaire import RegressionLineaire
     model = RegressionLineaire()
     data = pd.read_csv("./exemple.csv", sep=";")
-    data = separate_data(data, 0.8)
-    param = {"x_index": "Heure", "y_index": "NbVehicules"}
+    param = ["Heure", "NbVehicules", 0.8]
     prediction = model.run(data, param)
 
     print(prediction)
-    plt.scatter(data["predict_data"]["Heure"],
-                data["predict_data"]["NbVehicules"], color="black")
-    plt.plot(data["predict_data"]["Heure"],
-             prediction[:], color="blue")
-
-    plt.show()
 
 
 test_regression_lineaire_run()
