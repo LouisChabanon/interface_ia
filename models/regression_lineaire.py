@@ -17,10 +17,10 @@ class RegressionLineaire(Model):
         training_data = separeted_data["training_data"]
         predict_data = separeted_data["predict_data"]
         x_index, y_index = param[0], param[1]
-        X, Y = training_data[x_index], training_data[y_index]
+        X, Y = training_data[[x_index]], training_data[[y_index]]
         reg = model.fit(X, Y)
 
-        return reg.predict(predict_data[x_index])
+        return reg.predict(predict_data[[x_index]])
 
     def display_parameters(self):
         st.write("Colonnes à utiliser pour la régression linéaire")
