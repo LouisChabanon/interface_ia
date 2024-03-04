@@ -5,11 +5,12 @@ from sklearn.linear_model import LinearRegression
 
 
 class RegressionLineaire(Model):
-    def __init__(self):
+    def __init__(self, n_data):
         super().__init__("Regression linéaire",
                          ModelType.REGRESSION, None)
         self.param = None
         self.name = "Regression linéaire"
+        self.data = n_data
 
     def run(self, data: dict[pd.DataFrame], param: dict):
         model = LinearRegression()
@@ -20,6 +21,11 @@ class RegressionLineaire(Model):
         reg = model.fit(X, Y)
 
         return reg.predict(predict_data[["Heure"]])
+    
+
+    def display_parameters(self):
+        st.table(self.data)
+
 
     def display_results(self):
         st.write(f"Résultat du modèle {self.name} avec paramètre {self.param}")

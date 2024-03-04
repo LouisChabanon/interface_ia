@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-from models.regression_lineaire import RegressionLineaire, KNN
+from models.regression_lineaire import RegressionLineaire
+from models.KNN import KNN
 import base64
 
 exemple = "./exemple.csv"
@@ -53,15 +54,16 @@ def main() -> None:
 
 
 def main_page():
+
+    ## Upload Données
     st.header("Uploader vos données")
     data = st.file_uploader("Uploader un dataset", type=["csv"])
     st.write("ou utiliser l'exemple ci-dessous")
     col1, col2 = st.columns([0.2, 0.8])
     with col1:
-        st.download_button(label="Télécharger", data=exemple,
-                           file_name="exemple.csv")
+        st.download_button(label="Télécharger", data=exemple, file_name="exemple.csv")
     with col2:
-        exemple_check = st.checkbox("Utiliser l'exemple")
+        exemple_check = st.checkbox("Utiliser l'exemple", value=True)
     if exemple_check:
         data = exemple
     if data:
@@ -80,7 +82,7 @@ def main_page():
                              "K mean", "KNN", "Random Forest", "Neural Network"])
 
     if model == "Regression linéaire":
-        algorith = RegressionLineaire()
+        algorith = RegressionLineaire(data)
     elif model == "KNN":
         algorith = KNN()
 
