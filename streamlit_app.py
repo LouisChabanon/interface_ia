@@ -1,7 +1,9 @@
 import streamlit as st
 import pandas as pd
-from models.regression_lineaire import RegressionLineaire, KNN
+from models.regression_lineaire import RegressionLineaire
+from models.KNN import KNN
 import base64
+from models.utils import display_data
 
 exemple = "./exemple.csv"
 
@@ -66,6 +68,8 @@ def main_page():
         data = exemple
     if data:
         data = pd.read_csv(data, sep=";")
+        display_data(data)
+
 
     st.header("Paramétrer votre modèle")
     st.subheader("Choix du modèle")
@@ -85,7 +89,12 @@ def main_page():
         algorith = KNN()
 
     st.subheader("Choix des paramètres")
-    algorith.display_parameters()
+    params = algorith.display_parameters()
+    st.header("Exectuer le modèle")
+    execution = st.button("Exécuter")
+    if execution:
+        with st.spinner("Exécution du modèle..."):
+            algorith.run(data, params)
     st.header("Visualiser les résultats")
     algorith.display_results()
 
