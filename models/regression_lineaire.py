@@ -5,12 +5,11 @@ from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 
 class RegressionLineaire(Model):
-    def __init__(self, n_data):
+    def __init__(self):
         super().__init__("Regression linéaire",
                          ModelType.REGRESSION, None)
         self.param = None
         self.name = "Regression linéaire"
-        self.data = n_data
 
     def run(self, separated_data: pd.DataFrame, param: list):
         model = LinearRegression()
