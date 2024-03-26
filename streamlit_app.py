@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from models.regression_lineaire import RegressionLineaire
+from models.desision_tree import DecisionTree
 from models.KNN import KNN
 import base64
 from models.utils import display_data, separate_data
@@ -14,6 +15,52 @@ def display_pdf(file_path):
         base64_pdf = base64.b64encode(f.read()).decode("utf-8")
     pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf"></iframe>'
     st.markdown(pdf_display, unsafe_allow_html=True)
+
+
+def calculer_statistiques(df, colonnes_a_analyser):
+    if df is not None and colonnes_a_analyser:
+        try:
+            df_filtre = df[colonnes_a_analyser]
+            description = df_filtre.describe()
+            variance = df_filtre.var()
+            skewness = df_filtre.skew()
+            kurtosis = df_filtre.kurtosis()
+            iqr = description.loc['75%'] - description.loc['25%']
+            somme = df_filtre.sum()
+
+            with st.expander("Tendance Centrale"):
+                st.write("Mesures de la tendance centrale des données.")
+                for col in colonnes_a_analyser:
+                    st.metric(label=f"Moyenne {col}", value=f"{description.loc['mean'][col]:.2f}",
+                              help="""La moyenne des valeurs. Indique la tendance centrale des données. 
+                                      Peut être influencée par des valeurs extrêmes.""")
+                    st.metric(label=f"Médiane {col}", value=f"{description.loc['50%'][col]:.2f}",
+                              help="La valeur centrale des données. Moins sensible aux valeurs extrêmes que la moyenne.")
+
+            with st.expander("Dispersion"):
+                st.write("Mesures de la dispersion des données.")
+                for col in colonnes_a_analyser:
+                    st.metric(label=f"Écart type {col}", value=f"{description.loc['std'][col]:.2f}",
+                              help="""Mesure de la dispersion des données autour de la moyenne. 
+                                      Une valeur élevée indique une grande variabilité des données.""")
+                    st.metric(label=f"Variance {col}", value=f"{variance[col]:.2f}",
+                              help="Le carré de l'écart type. Mesure également la dispersion des données.")
+                    st.metric(label=f"IQR {col}", value=f"{iqr[col]:.2f}",
+                              help="Intervalle interquartile. Différence entre le 75e et le 25e percentile. Indique la dispersion du milieu 50% des données.")
+
+            with st.expander("Forme de la Distribution"):
+                st.write(
+                    "Mesures décrivant la forme de la distribution des données.")
+                for col in colonnes_a_analyser:
+                    st.metric(label=f"Asymétrie {col}", value=f"{skewness[col]:.2f}",
+                              help="""Mesure de l'asymétrie de la distribution des données. 
+                                      Une valeur > 0 indique une queue plus longue à droite, < 0 à gauche.""")
+                    st.metric(label=f"Curtose {col}", value=f"{kurtosis[col]:.2f}",
+                              help="""Mesure du degré de pointe de la distribution des données. 
+                                      Une valeur élevée indique une distribution plus pointue.""")
+
+        except Exception as e:
+            st.error(f"Erreur lors du calcul des statistiques : {e}")
 
 
 def fiches_page():
@@ -79,6 +126,13 @@ def main_page():
         data = pd.read_csv(data, sep=None, engine="python")
         display_data(data)
 
+        colonnes_numeriques = data.select_dtypes(
+            include=['float64', 'int64']).columns.tolist()
+        colonnes_a_analyser = st.multiselect("Sélectionnez les colonnes à analyser", options=colonnes_numeriques, default=colonnes_numeriques,
+                                             help="Sélectionnez les colonnes numériques pour lesquelles vous souhaitez calculer des statistiques.")
+
+        if st.button('Calculer les statistiques descriptives'):
+            calculer_statistiques(data, colonnes_a_analyser)
         st.header("Paramétrer votre modèle")
         st.subheader("Choix du modèle")
         categorie = st.selectbox(
@@ -93,13 +147,16 @@ def main_page():
         elif categorie == "Classification":
             model = st.selectbox(
                 "Choisir le modèle",
-                ["K mean", "KNN", "Random Forest", "Neural Network"],
+                ["K mean", "KNN", "Random Forest",
+                    "Neural Network", "Decision Tree"],
             )
 
         if model == "Regression linéaire":
             algorith = RegressionLineaire()
         elif model == "KNN":
             algorith = KNN()
+        elif model == "Decision Tree":
+            algorith = DecisionTree()
 
         st.subheader("Choix des paramètres")
         params = algorith.display_parameters(data)
