@@ -5,10 +5,6 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.datasets import make_regression
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
-
 
 
 class Randomforest(Model):
@@ -31,7 +27,7 @@ class Randomforest(Model):
         return train.predict(x_data)
 
     def display_parameters(self, data: pd.DataFrame):
-        st.write("Colonnes à utiliser pour la classification KNN")
+        st.write("Colonnes à utiliser pour la classification Randomforest")
         x_index_1 = st.selectbox("Nom de la colonne du premier paramètre",
                                  list(data.columns), index=0)
         x_index_2 = st.selectbox("Nom de la colonne du second paramètre",
