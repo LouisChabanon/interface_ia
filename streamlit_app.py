@@ -158,16 +158,16 @@ def main_page():
         elif model == "Decision Tree":
             algorith = DecisionTree()
 
+        algorith.setdata(data)
         st.subheader("Choix des paramètres")
-        params = algorith.display_parameters(data)
-        data = separate_data(data, params[2])
+        algorith.setparameters(algorith.display_parameters(data))
         st.header("Exectuer le modèle")
         execution = st.button("Exécuter")
         if execution:
             with st.spinner("Exécution du modèle..."):
-                result = algorith.run(data, params)
+                result = algorith.run()
             st.header("Visualiser les résultats")
-            algorith.display_results(data["predict_data"], result, params)
+            algorith.display_results(result)
 
 
 if __name__ == "__main__":

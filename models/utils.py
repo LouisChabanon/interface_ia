@@ -12,6 +12,13 @@ class Model():
         self.name = str(name)
         self.type = type
         self.parameters = parameters
+        self.data = None
+
+    def setparameters(self, parameters):
+        self.parameters = parameters
+    
+    def setdata(self, data):
+        self.data = data
 
     def __str__(self):
         return f"Model: {self.name}, Type: {self.type}, Parameters: {self.parameters}"

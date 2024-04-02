@@ -9,13 +9,15 @@ class RegressionLineaire(Model):
     def __init__(self):
         super().__init__("Regression linéaire", ModelType.REGRESSION, None)
         self.param = None
+        self.data = None
         self.name = "Regression linéaire"
 
-    def run(self, separated_data: pd.DataFrame, param: list):
+    def run(self):
         model = LinearRegression()
-        training_data = separated_data["training_data"]
-        predict_data = separated_data["predict_data"]
-        x_index, y_index = param[0], param[1]
+        self.data = separate_data(self.data, self.param[2])
+        training_data = self.data["training_data"]
+        predict_data = self.data["predict_data"]
+        x_index, y_index = self.param[0], self.param[1]
         X, Y = training_data[[x_index]], training_data[[y_index]]
         reg = model.fit(X, Y)
 
@@ -33,9 +35,9 @@ class RegressionLineaire(Model):
         ratio = st.slider("Ratio", 0.1, 1.0, 0.8)
         return [x_index, y_index, ratio]
 
-    def display_results(self, data: pd.DataFrame, result, param: list):
+    def display_results(self,result):
         st.write("Résultats de la régression linéaire")
         fig, ax = plt.subplots()
-        ax.scatter(data[param[0]], data[param[1]])
-        ax.plot(data[param[0]], result, color="red")
+        ax.scatter(self.data[self.param[0]], self.data[self.param[1]])
+        ax.plot(self.data[self.param[0]], result, color="red")
         st.pyplot(fig)
