@@ -39,7 +39,7 @@ class Randomforest(Model):
             st.error("Les colonnes doivent être différentes")
         st.write("Part de l'echantillon pour l'entrainement")
         ratio = st.slider("Ratio", 0.1, 1.0, 0.8)
-        st.write("Nombre de voisins")
+        st.write("Nombre d'estimateurs")
         k = st.slider("k", 1, 10, 5)
 
         x_index = (x_index_1, x_index_2)
