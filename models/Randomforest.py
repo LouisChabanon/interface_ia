@@ -2,25 +2,24 @@ from models.utils import Model, ModelType
 import streamlit as st
 import pandas as pd
 import numpy as np
-
-from sklearn.model_selection import train_test_split
-from sklearn.cluster import KMeans
-from sklearn.datasets import make_blobs
-
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.datasets import make_regression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
 
 
-class KMEAN(Model):
+
+class Randomforest(Model):
     def __init__(self):
         self.param = None
         self.type = ModelType.CLASSIFICATION
-        self.name = "KMean"
+        self.name = "Randomforest"
         super().__init__(self.name, self.type, self.param)
 
     def run(self, data: list[pd.DataFrame], param: dict):
-        model = KMeans(n_clusters=param[3], init='k-means++',n_init=10, max_iter=300, 
-                       tol=0.0001, verbose=0, random_state=None, copy_x=True, algorithm='auto')
+        model = RandomForestRegressor(n_estimators=param[3], random_state=0)
         training_data = data["training_data"]
         predict_data = data["predict_data"]
         x_index, y_index = param[0], param[1]
@@ -32,7 +31,7 @@ class KMEAN(Model):
         return train.predict(x_data)
 
     def display_parameters(self, data: pd.DataFrame):
-        st.write("Colonnes à utiliser pour la classification KMean")
+        st.write("Colonnes à utiliser pour la classification KNN")
         x_index_1 = st.selectbox("Nom de la colonne du premier paramètre",
                                  list(data.columns), index=0)
         x_index_2 = st.selectbox("Nom de la colonne du second paramètre",
@@ -44,7 +43,7 @@ class KMEAN(Model):
             st.error("Les colonnes doivent être différentes")
         st.write("Part de l'echantillon pour l'entrainement")
         ratio = st.slider("Ratio", 0.1, 1.0, 0.8)
-        st.write("Nombre de clusters")
+        st.write("Nombre de voisins")
         k = st.slider("k", 1, 10, 5)
 
         x_index = (x_index_1, x_index_2)
@@ -53,7 +52,7 @@ class KMEAN(Model):
 
     # A revoir
     def display_results(self, data: pd.DataFrame, result, param: list):
-        st.write("Résultats de la classification KMean")
+        st.write("Résultats de la classification Randomforest")
         st.write(accuracy_score(data[param[1]], result))
         st.write("Visualisation des résultats")
         fig, ax = plt.subplots()
