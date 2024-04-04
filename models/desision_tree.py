@@ -1,4 +1,4 @@
-from models.utils import Model, ModelType
+from models.utils import Model, ModelType, separate_data
 import streamlit as st
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import tree
@@ -8,11 +8,14 @@ import pandas as pd
 class DecisionTree(Model):
     def __init__(self):
         self.param = None
+        self.data = None
         self.name = "Decision Tree"
         self.type = ModelType.CLASSIFICATION
         super().__init__(self.name, self.type, self.param)
 
-    def run(self, data: list[pd.DataFrame], param: list):
+    def run(self):
+        param = self.param
+        data = separate_data(self.data, param[3])
         algo = DecisionTreeClassifier(random_state=42)
         X = []
         for i in range(len(data["training_data"])):

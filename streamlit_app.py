@@ -3,6 +3,7 @@ import pandas as pd
 from models.regression_lineaire import RegressionLineaire
 from models.desision_tree import DecisionTree
 from models.KNN import KNN
+from models.KMEAN import KMEAN
 import base64
 from models.utils import display_data, separate_data
 
@@ -157,6 +158,8 @@ def main_page():
             algorith = KNN()
         elif model == "Decision Tree":
             algorith = DecisionTree()
+        elif model == "K mean":
+            algorith = KMEAN()
 
         algorith.setdata(data)
         st.subheader("Choix des paramètres")
