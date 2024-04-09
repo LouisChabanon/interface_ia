@@ -163,7 +163,7 @@ def main_page():
         elif model == "K mean":
             algo = KMEAN()
         elif model == "Neural Network":
-            algorith = NN()
+            algo = NN()
         elif model == "Random Forest":
             algo = RandomForest()
 
