@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from models.regression_lineaire import RegressionLineaire
 from models.desision_tree import DecisionTree
+from models.neural_network import NN
 from models.KNN import KNN
 from models.KMEAN import KMEAN
 from models.Randomforest import RandomForest
@@ -161,6 +162,8 @@ def main_page():
             algo = DecisionTree()
         elif model == "K mean":
             algo = KMEAN()
+        elif model == "Neural Network":
+            algorith = NN()
         elif model == "Random Forest":
             algo = RandomForest()
 
