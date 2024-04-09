@@ -1,9 +1,9 @@
-from models.utils import Model, ModelType
+from models.utils import Model, ModelType, split_data
 import streamlit as st
 import pandas as pd
 import numpy as np
 
-from sklearn.model_selection import train_test_split
+
 from sklearn.cluster import KMeans
 from sklearn.datasets import make_blobs
 
@@ -19,13 +19,14 @@ class KMEAN(Model):
         self.name = "KMean"
         super().__init__(self.name, self.type, self.param)
 
+
     def run(self):
         param = self.param
-        data = self.data
+        self.data = split_data(self.data, param[2])
         model = KMeans(n_clusters=param[3], init='k-means++', n_init=10, max_iter=300,
-                       tol=0.0001, verbose=0, random_state=None, copy_x=True, algorithm='auto')
-        training_data = data["training_data"]
-        predict_data = data["predict_data"]
+                       tol=0.0001, verbose=0, random_state=None, copy_x=True, algorithm='lloyd')
+        training_data = self.data["training_data"]
+        predict_data = self.data["predict_data"]
         x_index, y_index = param[0], param[1]
         x_data = np.column_stack(
             (training_data[x_index[0]], training_data[x_index[1]]))
@@ -34,7 +35,9 @@ class KMEAN(Model):
             (predict_data[x_index[0]], predict_data[x_index[1]]))
         return train.predict(x_data)
 
-    def display_parameters(self, data: pd.DataFrame):
+
+    def display_parameters(self):
+        data = self.data
         st.write("Colonnes à utiliser pour la classification KMean")
         x_index_1 = st.selectbox("Nom de la colonne du premier paramètre",
                                  list(data.columns), index=0)
@@ -52,10 +55,12 @@ class KMEAN(Model):
 
         x_index = (x_index_1, x_index_2)
 
-        return [x_index, y_index, ratio, k]
+        self.param = [x_index, y_index, ratio, k]
 
     # A revoir
-    def display_results(self, data: pd.DataFrame, result, param: list):
+    def display_results(self, result):
+        data = self.data["predict_data"]
+        param = self.param
         st.write("Résultats de la classification KMean")
         st.write(accuracy_score(data[param[1]], result))
         st.write("Visualisation des résultats")

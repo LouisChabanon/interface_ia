@@ -44,7 +44,7 @@ class Model():
         st.write("Aucun résultat à afficher pour ce modèle")
 
 
-def separate_data(data: pd.DataFrame, ratio: float):
+def split_data(data: pd.DataFrame, ratio: float):
     training_data = data.sample(frac=ratio, random_state=0)
     predict_data = data.drop(training_data.index)
     return {"training_data": training_data, "predict_data": predict_data}

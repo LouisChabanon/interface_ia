@@ -1,4 +1,4 @@
-from models.utils import Model, ModelType
+from models.utils import Model, ModelType, split_data
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -7,17 +7,19 @@ import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor
 
 
-class Randomforest(Model):
+class RandomForest(Model):
     def __init__(self):
         self.param = None
         self.type = ModelType.CLASSIFICATION
         self.name = "Randomforest"
         super().__init__(self.name, self.type, self.param)
 
-    def run(self, data: list[pd.DataFrame], param: dict):
+    def run(self):
+        self.data = split_data(self.data, self.param[2])
+        param = self.param
         model = RandomForestRegressor(n_estimators=param[3], random_state=0)
-        training_data = data["training_data"]
-        predict_data = data["predict_data"]
+        training_data = self.data["training_data"]
+        predict_data = self.data["predict_data"]
         x_index, y_index = param[0], param[1]
         x_data = np.column_stack(
             (training_data[x_index[0]], training_data[x_index[1]]))
@@ -26,7 +28,8 @@ class Randomforest(Model):
             (predict_data[x_index[0]], predict_data[x_index[1]]))
         return train.predict(x_data)
 
-    def display_parameters(self, data: pd.DataFrame):
+    def display_parameters(self):
+        data = self.data
         st.write("Colonnes à utiliser pour la classification Randomforest")
         x_index_1 = st.selectbox("Nom de la colonne du premier paramètre",
                                  list(data.columns), index=0)
@@ -44,10 +47,12 @@ class Randomforest(Model):
 
         x_index = (x_index_1, x_index_2)
 
-        return [x_index, y_index, ratio, k]
+        self.param = [x_index, y_index, ratio, k]
 
     # A revoir
-    def display_results(self, data: pd.DataFrame, result, param: list):
+    def display_results(self, result):
+        data = self.data["predict_data"]
+        param = self.param
         st.write("Résultats de la classification Randomforest")
         st.write(accuracy_score(data[param[1]], result))
         st.write("Visualisation des résultats")

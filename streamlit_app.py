@@ -4,8 +4,9 @@ from models.regression_lineaire import RegressionLineaire
 from models.desision_tree import DecisionTree
 from models.KNN import KNN
 from models.KMEAN import KMEAN
+from models.Randomforest import RandomForest
 import base64
-from models.utils import display_data, separate_data
+from models.utils import display_data, split_data
 
 exemple = "./exemple.csv"
 
@@ -139,7 +140,7 @@ def main_page():
         categorie = st.selectbox(
             "Choisir le type de modele", ["Regression", "Classification"]
         )
-        algorith = None
+        algorithm = None
         if categorie == "Regression":
             model = st.selectbox(
                 "Choisir le modèle", [
@@ -153,24 +154,26 @@ def main_page():
             )
 
         if model == "Regression linéaire":
-            algorith = RegressionLineaire()
+            algo = RegressionLineaire()
         elif model == "KNN":
-            algorith = KNN()
+            algo = KNN()
         elif model == "Decision Tree":
-            algorith = DecisionTree()
+            algo = DecisionTree()
         elif model == "K mean":
-            algorith = KMEAN()
+            algo = KMEAN()
+        elif model == "Random Forest":
+            algo = RandomForest()
 
-        algorith.setdata(data)
+        algo.setdata(data)
         st.subheader("Choix des paramètres")
-        algorith.setparameters(algorith.display_parameters(data))
+        algo.display_parameters()
         st.header("Exectuer le modèle")
         execution = st.button("Exécuter")
         if execution:
             with st.spinner("Exécution du modèle..."):
-                result = algorith.run()
+                result = algo.run()
             st.header("Visualiser les résultats")
-            algorith.display_results(result)
+            algo.display_results(result)
 
 
 if __name__ == "__main__":

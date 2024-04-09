@@ -1,4 +1,4 @@
-from models.utils import Model, ModelType, separate_data
+from models.utils import Model, ModelType, split_data
 import streamlit as st
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import tree
@@ -15,7 +15,7 @@ class DecisionTree(Model):
 
     def run(self):
         param = self.param
-        data = separate_data(self.data, param[3])
+        data = split_data(self.data, param[2])
         algo = DecisionTreeClassifier(random_state=42)
         X = []
         for i in range(len(data["training_data"])):
@@ -25,7 +25,8 @@ class DecisionTree(Model):
         result = algo.fit(X, y)
         return result.predict([data["predict_data"][param[0][0]], data["predict_data"][param[0][1]]])
 
-    def display_parameters(self, data: pd.DataFrame):
+    def display_parameters(self):
+        data = self.data
         st.write("Colonnes à utiliser pour la classification KNN")
         x_index_1 = st.selectbox("Nom de la colonne du premier paramètre",
                                  list(data.columns), index=0)
@@ -41,7 +42,7 @@ class DecisionTree(Model):
 
         x_index = (x_index_1, x_index_2)
 
-        return [x_index, y_index, ratio]
+        self.param = [x_index, y_index, ratio]
 
-    def display_results(self, data, result, param):
+    def display_results(self, result):
         tree.plot_tree(result)

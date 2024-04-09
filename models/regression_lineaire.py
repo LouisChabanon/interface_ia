@@ -1,4 +1,4 @@
-from models.utils import Model, ModelType, separate_data
+from models.utils import Model, ModelType, split_data
 import streamlit as st
 import pandas as pd
 from sklearn.linear_model import LinearRegression
@@ -8,13 +8,13 @@ import matplotlib.pyplot as plt
 class RegressionLineaire(Model):
     def __init__(self):
         super().__init__("Regression linéaire", ModelType.REGRESSION, None)
-        self.param = None
+        self.param = []
         self.data = None
         self.name = "Regression linéaire"
 
     def run(self):
         model = LinearRegression()
-        self.data = separate_data(self.data, self.param[2])
+        self.data = split_data(self.data, self.param[2])
         training_data = self.data["training_data"]
         predict_data = self.data["predict_data"]
         x_index, y_index = self.param[0], self.param[1]
@@ -23,7 +23,8 @@ class RegressionLineaire(Model):
 
         return reg.predict(predict_data[[x_index]])
 
-    def display_parameters(self, data: pd.DataFrame):
+    def display_parameters(self):
+        data = self.data
         st.write("Colonnes à utiliser pour la régression linéaire")
         x_index = st.selectbox("Nom de la colonne x",
                                list(data.columns), index=0)
@@ -33,11 +34,13 @@ class RegressionLineaire(Model):
             st.error("Les colonnes x et y doivent être différentes")
         st.write("Part de l'échantillon pour l'entrainement")
         ratio = st.slider("Ratio", 0.1, 1.0, 0.8)
-        return [x_index, y_index, ratio]
+        self.param = [x_index, y_index, ratio]
+
 
     def display_results(self,result):
+        print(self.param)
         st.write("Résultats de la régression linéaire")
         fig, ax = plt.subplots()
-        ax.scatter(self.data[self.param[0]], self.data[self.param[1]])
-        ax.plot(self.data[self.param[0]], result, color="red")
+        ax.scatter(self.data["training_data"][self.param[0]], self.data["training_data"][self.param[1]])
+        ax.plot(self.data["predict_data"][self.param[0]], result, color="red")
         st.pyplot(fig)

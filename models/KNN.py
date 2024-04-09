@@ -1,4 +1,4 @@
-from models.utils import Model, ModelType
+from models.utils import Model, ModelType, split_data
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -14,10 +14,12 @@ class KNN(Model):
         self.name = "KNN"
         super().__init__(self.name, self.type, self.param)
 
-    def run(self, data: list[pd.DataFrame], param: dict):
+    def run(self):
+        param = self.param
+        self.data = split_data(self.data, param[2])
         model = KNeighborsClassifier(n_neighbors=param[3])
-        training_data = data["training_data"]
-        predict_data = data["predict_data"]
+        training_data = self.data["training_data"]
+        predict_data = self.data["predict_data"]
         x_index, y_index = param[0], param[1]
         x_data = np.column_stack(
             (training_data[x_index[0]], training_data[x_index[1]]))
@@ -26,7 +28,8 @@ class KNN(Model):
             (predict_data[x_index[0]], predict_data[x_index[1]]))
         return train.predict(x_data)
 
-    def display_parameters(self, data: pd.DataFrame):
+    def display_parameters(self):
+        data = self.data
         st.write("Colonnes à utiliser pour la classification KNN")
         x_index_1 = st.selectbox("Nom de la colonne du premier paramètre",
                                  list(data.columns), index=0)
@@ -44,10 +47,12 @@ class KNN(Model):
 
         x_index = (x_index_1, x_index_2)
 
-        return [x_index, y_index, ratio, k]
+        self.param = [x_index, y_index, ratio, k]
 
     # A revoir
-    def display_results(self, data: pd.DataFrame, result, param: list):
+    def display_results(self, result):
+        data = self.data["predict_data"]
+        param = self.param
         st.write("Résultats de la classification KNN")
         st.write(accuracy_score(data[param[1]], result))
         st.write("Visualisation des résultats")
