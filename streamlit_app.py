@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from models.regression_lineaire import RegressionLineaire
 from models.desision_tree import DecisionTree
+from models.neural_network import NN
 from models.KNN import KNN
 from models.KMEAN import KMEAN
 import base64
@@ -160,6 +161,8 @@ def main_page():
             algorith = DecisionTree()
         elif model == "K mean":
             algorith = KMEAN()
+        elif model == "Neural Network":
+            algorith = NN()
 
         algorith.setdata(data)
         st.subheader("Choix des paramètres")
